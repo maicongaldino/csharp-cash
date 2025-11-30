@@ -1,0 +1,89 @@
+<div *ngIf="open" class="fixed inset-0 z-50 flex items-center justify-center">
+  <div
+    class="absolute inset-0 bg-black/60"
+    role="button"
+    tabindex="0"
+    (click)="fechar()"
+    (keyup.enter)="fechar()"
+  ></div>
+  <div
+    class="relative bg-slate-900 border border-white/10 rounded-3xl p-6 w-full max-w-md shadow-2xl"
+    [formGroup]="form"
+  >
+    <h3 class="text-lg font-bold mb-4 text-white">Novo Gasto</h3>
+    <div class="space-y-3">
+      <app-campo-formulario
+        rotulo="Descrição"
+        [nomeControle]="'descricao'"
+        [idInput]="idDescricao"
+        [obrigatorio]="true"
+      >
+        <input
+          [id]="idDescricao"
+          type="text"
+          formControlName="descricao"
+          class="w-full bg-slate-800 border border-slate-700 rounded-2xl px-4 py-2 text-sm text-white outline-none"
+        />
+      </app-campo-formulario>
+
+      <app-campo-formulario
+        rotulo="Valor"
+        [nomeControle]="'valor'"
+        [idInput]="idValor"
+        [obrigatorio]="true"
+      >
+        <app-input-moeda [id]="idValor" formControlName="valor"></app-input-moeda>
+      </app-campo-formulario>
+
+      <div class="space-y-3">
+        <app-campo-formulario
+          rotulo="Data"
+          [nomeControle]="'data'"
+          [idInput]="idData"
+          [obrigatorio]="true"
+        >
+          <app-input-data [id]="idData" formControlName="data"></app-input-data>
+        </app-campo-formulario>
+        <app-campo-formulario
+          rotulo="Categoria"
+          [nomeControle]="'categoria'"
+          [obrigatorio]="true"
+          [mensagensErro]="{ categoriaNaoExistente: 'Categoria nova — será criada ao salvar' }"
+        >
+          <app-categoria-select
+            formControlName="categoria"
+            [obrigatorio]="true"
+            [tocado]="form.get('categoria')?.touched ?? false"
+          ></app-categoria-select>
+        </app-campo-formulario>
+      </div>
+
+      <app-campo-formulario
+        rotulo="Pagamento"
+        [nomeControle]="'metodoPagamento'"
+        [obrigatorio]="true"
+      >
+        <app-pagamento-select
+          formControlName="metodoPagamento"
+          [cartoes]="cartoes"
+          [obrigatorio]="true"
+          [tocado]="form.get('metodoPagamento')?.touched ?? false"
+        ></app-pagamento-select>
+      </app-campo-formulario>
+    </div>
+    <div class="flex justify-end gap-2 mt-5">
+      <app-botao
+        [tamanho]="TamanhoBotaoEnum.Pequeno"
+        [tipo]="TipoBotaoEnum.Secundario"
+        (aoClicar)="fechar()"
+        >Cancelar</app-botao
+      >
+      <app-botao
+        [tamanho]="TamanhoBotaoEnum.Pequeno"
+        [tipo]="TipoBotaoEnum.Primario"
+        (aoClicar)="salvar()"
+        >Salvar</app-botao
+      >
+    </div>
+  </div>
+</div>

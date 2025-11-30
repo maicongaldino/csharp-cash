@@ -1,0 +1,110 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+/* Tema escuro personalizado: preto + roxo/rosa */
+:root {
+  --cor-preto: #0b1220;
+  --cor-preto-2: #0f172a;
+  --cor-roxo: #8b5cf6; /* Tailwind purple-500 */
+  --cor-rosa: #ec4899; /* Tailwind pink-500 */
+  --texto: #f1f5f9; /* slate-100 */
+  --texto-secundario: #94a3b8; /* slate-400 */
+}
+
+:root {
+  color-scheme: dark;
+}
+body {
+  margin: 0;
+  background: var(--cor-preto);
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    Ubuntu,
+    Cantarell,
+    Noto Sans,
+    sans-serif;
+}
+
+/* Angular Material — ajustes visuais para tema escuro personalizado */
+.mat-mdc-raised-button {
+  --mdc-filled-button-container-color: var(--cor-roxo);
+  --mdc-filled-button-label-text-color: #fff;
+}
+
+.mat-mdc-stroked-button {
+  --mdc-outlined-button-outline-color: rgba(139, 92, 246, 0.6);
+  --mdc-outlined-button-label-text-color: var(--cor-roxo);
+  border-color: rgba(139, 92, 246, 0.3);
+}
+
+.mat-mdc-form-field .mdc-text-field--filled {
+  --mdc-filled-text-field-container-color: var(--cor-preto-2);
+  --mdc-filled-text-field-label-text-color: var(--texto-secundario);
+  --mdc-filled-text-field-focus-active-indicator-color: var(--cor-rosa);
+  --mdc-filled-text-field-input-text-color: var(--texto);
+  border-radius: 12px;
+}
+
+.mat-mdc-select {
+  color: var(--texto);
+}
+.mat-mdc-option.mdc-list-item--selected .mdc-list-item__primary-text {
+  color: var(--cor-rosa);
+}
+
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  background: var(--cor-preto);
+  color: var(--texto);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.animate-slide-down {
+  animation: slideDown 0.25s ease-out;
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+}
+.custom-scrollbar::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(148, 163, 184, 0.15);
+  border-radius: 9999px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.6);
+  border-radius: 9999px;
+}

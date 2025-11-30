@@ -1,0 +1,117 @@
+<section class="animate-fade-in space-y-8">
+  <div class="space-y-4">
+    <h2 class="text-xl font-bold text-white">Gerenciar Cartões</h2>
+    <div class="flex gap-4 overflow-x-auto pb-4 custom-scrollbar">
+      <app-botao
+        [tamanho]="TamanhoBotaoEnum.Medio"
+        [tipo]="TipoBotaoEnum.Secundario"
+        [classeExtra]="
+          'min-w-[280px] h-[170px] border-2 border-dashed border-slate-700 rounded-3xl flex flex-col items-center justify-center text-slate-500 hover:border-pink-500 hover:text-pink-500 transition group focus:outline-none'
+        "
+        (aoClicar)="mostrarFormCartao.set(!mostrarFormCartao())"
+      >
+        <span class="text-4xl mb-2 group-hover:scale-110 transition font-light">+</span>
+        <span class="text-sm font-bold">Adicionar Cartão</span>
+      </app-botao>
+      <div
+        *ngFor="let cartao of cartoes()"
+        class="min-w-[280px] h-[170px] rounded-3xl p-6 flex flex-col justify-between relative overflow-hidden shadow-2xl select-none transition hover:-translate-y-1"
+        [ngStyle]="{ background: 'linear-gradient(135deg, ' + cartao.cor + ', #0f172a)' }"
+      >
+        <div
+          class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-10 -mt-10 blur-3xl"
+        ></div>
+        <div class="flex justify-between items-start z-10">
+          <span class="text-white/80 font-mono text-xs tracking-widest">CREDIT CARD</span>
+          <div class="flex items-center gap-2">
+            <button
+              (click)="iniciarEdicaoCartao(cartao)"
+              class="text-white/50 hover:text-yellow-300 bg-black/20 rounded-full w-6 h-6 flex items-center justify-center text-xs"
+              title="Editar"
+            >
+              ✎
+            </button>
+            <button
+              (click)="removerCartao(cartao.id)"
+              class="text-white/50 hover:text-white bg-black/20 rounded-full w-6 h-6 flex items-center justify-center text-xs"
+              title="Excluir"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+        <div class="z-10">
+          <p class="text-white font-bold text-xl tracking-wider shadow-sm">{{ cartao.nome }}</p>
+          <p class="text-white/60 text-xs mt-2 font-mono tracking-widest">•••• •••• •••• 0000</p>
+        </div>
+        <div class="flex justify-between items-end z-10">
+          <div>
+            <p class="text-[9px] text-white/60 uppercase font-bold mb-0.5">Limite</p>
+            <p class="text-white font-mono text-sm font-bold">
+              {{ cartao.limite ? (cartao.limite | currency: 'BRL') : 'N/A' }}
+            </p>
+          </div>
+          <div
+            class="w-10 h-6 bg-white/20 rounded-md flex items-center justify-center overflow-hidden"
+          >
+            <div class="w-6 h-6 rounded-full bg-red-500/50 -ml-2"></div>
+            <div class="w-6 h-6 rounded-full bg-yellow-500/50 -ml-3"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div
+      *ngIf="mostrarFormCartao()"
+      class="bg-slate-900 border border-slate-700 p-6 rounded-3xl animate-slide-down shadow-xl"
+    >
+      <h4 class="text-sm font-bold mb-4 text-slate-300">
+        {{ editandoId() ? 'Editar Cartão' : 'Novo Cartão' }}
+      </h4>
+      <form
+        [formGroup]="cartaoForm"
+        class="flex gap-3 flex-wrap md:flex-nowrap items-center"
+        (ngSubmit)="salvarCartao()"
+      >
+        <app-campo-formulario rotulo="Nome" [nomeControle]="'nome'" [obrigatorio]="true">
+          <input
+            type="text"
+            formControlName="nome"
+            placeholder="Nome (Ex: Nubank)"
+            class="flex-1 bg-slate-950 border border-slate-700 rounded-2xl px-4 py-3 text-white outline-none focus:border-purple-500 shadow-inner"
+          />
+        </app-campo-formulario>
+        <app-campo-formulario rotulo="Limite" [nomeControle]="'limite'" [obrigatorio]="true">
+          <app-input-moeda formControlName="limite"></app-input-moeda>
+        </app-campo-formulario>
+        <app-campo-formulario rotulo="Cor" [nomeControle]="'cor'" [obrigatorio]="true">
+          <div
+            class="relative w-12 h-12 rounded-full overflow-hidden border border-slate-600 cursor-pointer shadow-inner"
+          >
+            <input
+              type="color"
+              formControlName="cor"
+              class="absolute -top-2 -left-2 w-16 h-16 cursor-pointer border-none bg-transparent"
+              title="Cor do Cartão"
+            />
+          </div>
+        </app-campo-formulario>
+        <div class="flex items-center gap-2">
+          <app-botao
+            [tipo]="TipoBotaoEnum.Primario"
+            [tamanho]="TamanhoBotaoEnum.Medio"
+            tipoHtml="submit"
+            >{{ editandoId() ? 'Salvar Edição' : 'Salvar' }}</app-botao
+          >
+          <app-botao
+            *ngIf="editandoId()"
+            [tipo]="TipoBotaoEnum.Texto"
+            [tamanho]="TamanhoBotaoEnum.Medio"
+            (aoClicar)="cancelarEdicaoCartao()"
+            [classeExtra]="'text-slate-400 hover:text-yellow-500'"
+            >Cancelar</app-botao
+          >
+        </div>
+      </form>
+    </div>
+  </div>
+</section>

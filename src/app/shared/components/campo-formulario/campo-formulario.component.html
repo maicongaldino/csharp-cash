@@ -1,0 +1,9 @@
+<div class="mb-3">
+  <label class="block text-xs font-bold text-slate-300 mb-1" [attr.for]="idInput">
+    {{ rotulo }}<span *ngIf="obrigatorio" class="text-red-400"> *</span>
+  </label>
+  <ng-content></ng-content>
+  <app-mensagem-erro [control]="control" [mensagens]="mensagensErro"></app-mensagem-erro>
+  <p *ngIf="dica" class="mt-1 text-[10px] text-slate-500">{{ dica }}</p>
+  <div *ngIf="control?.touched && control?.invalid" aria-live="polite"></div>
+</div>

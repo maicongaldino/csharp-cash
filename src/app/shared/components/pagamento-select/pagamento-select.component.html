@@ -1,0 +1,16 @@
+<select
+  [id]="id"
+  [ngModel]="valor"
+  (ngModelChange)="alterarValor($event)"
+  (blur)="marcarTocado()"
+  class="w-full bg-slate-800 border border-slate-700 rounded-2xl px-4 py-2 text-sm text-white outline-none"
+>
+  <option value="DINHEIRO">💵 Dinheiro</option>
+  <option value="PIX">💠 PIX</option>
+  <optgroup label="Cartões de Crédito" *ngIf="cartoes?.length">
+    <option *ngFor="let c of cartoes" [value]="c.id">💳 {{ c.nome }}</option>
+  </optgroup>
+</select>
+<p *ngIf="obrigatorio && tocado && !valor" class="mt-1 text-[10px] text-red-400">
+  Campo obrigatório
+</p>

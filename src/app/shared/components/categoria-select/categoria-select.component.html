@@ -1,0 +1,13 @@
+<select
+  [id]="id"
+  [ngModel]="valor"
+  (ngModelChange)="alterarValor($event)"
+  (blur)="marcarTocado()"
+  class="w-full bg-slate-800 border border-slate-700 rounded-2xl px-4 py-2 text-sm text-white outline-none"
+>
+  <option *ngFor="let c of categorias" [value]="c.value">{{ c.label }}</option>
+  <option value="Outros">Outros</option>
+</select>
+<p *ngIf="obrigatorio && tocado && !valor" class="mt-1 text-[10px] text-red-400">
+  Campo obrigatório
+</p>

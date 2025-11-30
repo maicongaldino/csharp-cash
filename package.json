@@ -1,0 +1,60 @@
+{
+  "name": "csharp-cash",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "ng serve --port 4300",
+    "build": "ng build",
+    "serve": "ng serve --port 4200",
+    "ng:serve": "ng serve --port 4200",
+    "preview": "ng serve --configuration production",
+    "serve:hmr": "ng serve --hmr --port 4200",
+    "start:hmr": "ng serve --hmr --port 4300",
+    "format": "prettier --write \"**/*.{ts,js,cjs,mjs,json,html,css,scss,md}\"",
+    "format:check": "prettier --check \"**/*.{ts,js,cjs,mjs,json,html,css,scss,md}\"",
+    "typecheck": "tsc --noEmit",
+    "lint": "ng lint",
+    "build:ghpages": "node -e \"const repo=process.env.npm_config_repo||process.env.GH_PAGES_REPO; if(!repo){console.error('Informe --repo=<nome> ou GH_PAGES_REPO'); process.exit(1);} const {spawnSync}=require('child_process'); const args=['build','--configuration','production','--base-href',`/${repo}/`,'--deploy-url',`/${repo}/`]; const r=spawnSync('ng',args,{stdio:'inherit',shell:true}); process.exit(r.status);\"",
+    "deploy:ghpages": "npm run build:ghpages && npx angular-cli-ghpages --dir=dist/csharp-cash",
+    "deploy:subtree": "npm run build:ghpages && git subtree push --prefix dist/csharp-cash origin gh-pages"
+  },
+  "dependencies": {
+    "@angular/animations": "^18.2.0",
+    "@angular/cdk": "^18.2.0",
+    "@angular/common": "^18.2.0",
+    "@angular/compiler": "^18.2.0",
+    "@angular/core": "^18.2.0",
+    "@angular/forms": "^18.2.0",
+    "@angular/material": "^18.2.0",
+    "@angular/platform-browser": "^18.2.0",
+    "@angular/platform-browser-dynamic": "^18.2.0",
+    "@angular/router": "^18.2.0",
+    "@angular/service-worker": "^18.2.0",
+    "dexie": "^4.2.1",
+    "rxjs": "^7.8.1",
+    "zone.js": "^0.14.4"
+  },
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^18.2.0",
+    "@angular/build": "^18.2.21",
+    "@angular/cli": "^18.2.0",
+    "@angular/compiler-cli": "^18.2.14",
+    "angular-eslint": "21.0.1",
+    "autoprefixer": "^10.4.22",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
+    "postcss": "^8.5.6",
+    "prettier": "^3.7.2",
+    "tailwindcss": "^3.4.18",
+    "tslib": "^2.6.2",
+    "typescript": "^5.5.4",
+    "typescript-eslint": "8.46.4",
+    "webpack-dev-server": "^4.15.1"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "printWidth": 100,
+    "semi": true
+  }
+}

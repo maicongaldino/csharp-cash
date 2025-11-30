@@ -1,0 +1,87 @@
+<div class="relative w-full">
+  <input
+    [id]="id"
+    type="month"
+    [value]="valor"
+    (input)="handleInput($event)"
+    (blur)="handleBlur()"
+    class="hidden"
+    [disabled]="disabled"
+  />
+  <div class="flex items-center gap-2 w-full">
+    <div
+      class="flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-2xl px-4 py-2 text-sm text-white shadow-sm w-full"
+    >
+      <button
+        type="button"
+        (click)="prevMes()"
+        class="px-2 py-1 text-[10px] rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700"
+        [disabled]="disabled"
+      >
+        ◀
+      </button>
+      <button
+        type="button"
+        (click)="toggle()"
+        class="px-3 py-1 rounded-xl bg-slate-800/60 hover:bg-slate-700/60 flex items-center justify-center gap-2 flex-1 text-center"
+        [disabled]="disabled"
+      >
+        <span class="text-white font-medium whitespace-nowrap">{{ formatado() }}</span>
+        <span class="text-slate-400">📅</span>
+      </button>
+      <button
+        type="button"
+        (click)="nextMes()"
+        class="px-2 py-1 text-[10px] rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700"
+        [disabled]="disabled"
+      >
+        ▶
+      </button>
+    </div>
+    <ng-container *ngIf="quickActions">
+      <button
+        type="button"
+        (click)="setCurrent()"
+        class="px-2 py-1 text-[10px] rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700"
+      >
+        Hoje
+      </button>
+    </ng-container>
+  </div>
+  <div
+    *ngIf="aberto"
+    class="absolute z-20 mt-2 w-72 bg-slate-900 border border-white/10 rounded-2xl shadow-xl p-3"
+  >
+    <div class="flex items-center justify-between mb-2">
+      <button
+        type="button"
+        (click)="decrementarAno()"
+        class="px-2 py-1 text-[10px] rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700"
+      >
+        ◀
+      </button>
+      <span class="text-white font-bold">{{ anoAtual }}</span>
+      <button
+        type="button"
+        (click)="incrementarAno()"
+        class="px-2 py-1 text-[10px] rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700"
+      >
+        ▶
+      </button>
+    </div>
+    <div class="grid grid-cols-3 gap-2">
+      <button
+        type="button"
+        *ngFor="let m of meses; let i = index"
+        (click)="selecionarMes(i + 1)"
+        class="px-3 py-2 rounded-xl text-sm"
+        [class.bg-purple-600]="i + 1 === mesAtual"
+        [class.text-white]="i + 1 === mesAtual"
+        [class.bg-slate-800]="i + 1 !== mesAtual"
+        [class.text-slate-300]="i + 1 !== mesAtual"
+      >
+        {{ m }}
+      </button>
+    </div>
+  </div>
+</div>

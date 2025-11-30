@@ -1,0 +1,220 @@
+<section class="space-y-6 animate-fade-in">
+  <div class="flex items-center justify-between">
+    <h2 class="text-2xl font-bold text-white">Resumo Financeiro</h2>
+    <div class="flex items-center gap-3">
+      <div *ngIf="!filtroTodoPeriodo()" [formGroup]="filtroForm">
+        <app-input-data [modo]="'mes'" formControlName="mes"></app-input-data>
+      </div>
+      <div class="flex p-1.5 bg-slate-900/80 rounded-full border border-white/5">
+        <app-botao
+          [tamanho]="TamanhoBotaoEnum.Pequeno"
+          [tipo]="TipoBotaoEnum.Texto"
+          (aoClicar)="filtroTodoPeriodo.set(false)"
+          [classeExtra]="
+            (!filtroTodoPeriodo() ? 'bg-slate-700 text-white' : 'text-slate-400') + ' rounded-full'
+          "
+        >
+          Por Mês
+        </app-botao>
+        <app-botao
+          [tamanho]="TamanhoBotaoEnum.Pequeno"
+          [tipo]="TipoBotaoEnum.Texto"
+          (aoClicar)="filtroTodoPeriodo.set(true)"
+          [classeExtra]="
+            (filtroTodoPeriodo() ? 'bg-purple-600 text-white' : 'text-slate-400') + ' rounded-full'
+          "
+        >
+          Média Geral
+        </app-botao>
+      </div>
+      <app-botao
+        [tamanho]="TamanhoBotaoEnum.Pequeno"
+        [tipo]="TipoBotaoEnum.Primario"
+        (aoClicar)="abrirNovoGasto()"
+        >Novo Gasto</app-botao
+      >
+    </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div
+      *ngIf="estadoVazio()"
+      class="md:col-span-2 lg:col-span-4 bg-slate-900 border border-white/10 p-5 rounded-3xl"
+    >
+      <div class="flex items-center justify-between">
+        <div>
+          <h3 class="text-lg font-bold text-white">Sem dados cadastrados ainda</h3>
+          <p class="text-xs text-slate-400 mt-1">
+            Vá em <span class="font-bold text-white">Configurações</span> para opções de backup ou
+            restauração.
+          </p>
+        </div>
+        <a
+          routerLink="/configuracoes"
+          class="px-4 py-2 text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white rounded-full transition shadow-lg"
+          >Abrir Configurações</a
+        >
+      </div>
+    </div>
+    <div
+      class="bg-slate-900/50 border border-white/5 p-5 rounded-3xl relative overflow-hidden group"
+    >
+      <div
+        class="absolute top-0 right-0 w-20 h-20 bg-green-500/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-green-500/20 transition"
+      ></div>
+      <p class="text-slate-400 text-xs font-bold mb-1 uppercase tracking-wider">Renda Mensal</p>
+      <h3 class="text-xl font-bold text-green-400">
+        {{ config.config().rendaMensal | currency: 'BRL' }}
+      </h3>
+    </div>
+    <div
+      class="bg-slate-900/50 border border-white/5 p-5 rounded-3xl relative overflow-hidden group"
+    >
+      <div
+        class="absolute top-0 right-0 w-20 h-20 bg-blue-500/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-blue-500/20 transition"
+      ></div>
+      <p class="text-slate-400 text-xs font-bold mb-1 uppercase tracking-wider">
+        Renda Fixa Comprometida
+      </p>
+      <h3 class="text-xl font-bold text-blue-400">{{ totalFixos() | currency: 'BRL' }}</h3>
+      <p class="text-[10px] text-slate-500 mt-1">
+        {{ porcentagemRendaComprometida() | number: '1.0-1' }}% da renda é fixa
+      </p>
+    </div>
+    <div
+      class="bg-slate-900/50 border border-white/5 p-5 rounded-3xl relative overflow-hidden group"
+    >
+      <div
+        class="absolute top-0 right-0 w-20 h-20 bg-red-500/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-red-500/20 transition"
+      ></div>
+      <p class="text-slate-400 text-xs font-bold mb-1 uppercase tracking-wider">
+        {{
+          filtroTodoPeriodo()
+            ? 'Média de Gastos Mensal'
+            : 'Gasto Realizado (' + mesFormatado() + ')'
+        }}
+      </p>
+      <h3 class="text-xl font-bold text-red-400">{{ totalGastosDisplay() | currency: 'BRL' }}</h3>
+      <div class="w-full bg-slate-800 h-1.5 mt-2 rounded-full overflow-hidden">
+        <div class="h-full bg-red-500 rounded-full" [style.width.%]="porcentagemGastoRenda()"></div>
+      </div>
+    </div>
+    <div
+      class="bg-slate-900/50 border border-white/5 p-5 rounded-3xl relative overflow-hidden group"
+    >
+      <div
+        class="absolute top-0 right-0 w-20 h-20 bg-purple-500/10 rounded-full blur-2xl -mr-10 -mt-10 group-hover:bg-purple-500/20 transition"
+      ></div>
+      <p class="text-slate-400 text-xs font-bold mb-1 uppercase tracking-wider">
+        {{ filtroTodoPeriodo() ? 'Sobra Média Mensal' : 'Saldo Livre Estimado' }}
+      </p>
+      <h3 class="text-xl font-bold text-purple-400">
+        {{ config.config().rendaMensal - totalGastosDisplay() | currency: 'BRL' }}
+      </h3>
+      <p class="text-[10px] text-slate-500 mt-1">Considerando gastos já lançados</p>
+    </div>
+  </div>
+  <div class="bg-slate-900/80 border border-white/5 p-6 rounded-3xl">
+    <h3 class="text-lg font-bold mb-6 flex items-center gap-2">
+      <span class="w-2 h-6 bg-pink-500 rounded-full"></span>
+      {{
+        filtroTodoPeriodo()
+          ? 'Evolução Mensal (Total Gasto)'
+          : 'Fluxo Diário (' + mesFormatado() + ')'
+      }}
+    </h3>
+    <div class="h-48 flex items-end justify-between gap-1 sm:gap-2">
+      <div
+        *ngIf="dadosGrafico().length === 0"
+        class="w-full h-full flex items-center justify-center text-slate-500 text-sm italic"
+      >
+        Sem dados para exibir neste período
+      </div>
+      <div
+        *ngFor="let item of dadosGrafico()"
+        class="flex-1 flex flex-col items-center group relative min-w-[20px]"
+      >
+        <div
+          class="absolute bottom-full mb-2 opacity-0 group-hover:opacity-100 transition bg-slate-800 text-white text-xs px-3 py-1.5 rounded-xl shadow-lg whitespace-nowrap z-10 pointer-events-none border border-white/10"
+        >
+          {{ item.label }}: {{ item.valor | currency: 'BRL' }}
+        </div>
+        <div
+          class="w-full max-w-[30px] bg-gradient-to-t from-purple-900 to-purple-600 rounded-t-lg hover:from-pink-600 hover:to-pink-400 transition-all cursor-pointer"
+          [style.height.%]="item.altura"
+        ></div>
+        <span class="text-[9px] sm:text-[10px] text-slate-500 mt-2 truncate max-w-full">{{
+          item.label
+        }}</span>
+      </div>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div
+      class="bg-gradient-to-br from-slate-900 to-slate-800 border border-white/5 p-6 rounded-3xl"
+    >
+      <h3 class="text-lg font-bold mb-4 text-white">Objetivo de Economia</h3>
+      <div class="flex justify-between text-sm mb-1 text-slate-400">
+        <span>Meta Mensal ({{ config.config().metaEconomiaPorcentagem }}%)</span
+        ><span class="text-white font-mono">{{ valorParaGuardar() | currency: 'BRL' }}</span>
+      </div>
+      <div class="mt-6 pt-6 border-t border-white/5">
+        <div class="flex justify-between items-end mb-2">
+          <span class="text-sm text-slate-400">Total Guardado</span
+          ><span class="text-2xl font-bold text-pink-400">{{
+            config.config().dinheiroGuardadoAtual | currency: 'BRL'
+          }}</span>
+        </div>
+        <div class="flex justify-between items-end">
+          <span class="text-xs text-slate-500"
+            >Objetivo: {{ config.config().objetivoFinanceiro | currency: 'BRL' }}</span
+          ><span class="text-xs text-pink-400 font-bold"
+            >{{ porcentagemConquista() | number: '1.0-1' }}%</span
+          >
+        </div>
+        <div
+          class="w-full bg-slate-950 h-3 mt-2 rounded-full overflow-hidden border border-white/5"
+        >
+          <div
+            class="h-full bg-gradient-to-r from-pink-600 to-purple-600 shadow-[0_0_15px_rgba(236,72,153,0.5)] transition-all duration-1000"
+            [style.width.%]="porcentagemConquista() > 100 ? 100 : porcentagemConquista()"
+          ></div>
+        </div>
+        <p class="text-xs text-center mt-3 text-slate-400">
+          Falta
+          <span class="text-white">{{
+            config.config().objetivoFinanceiro - config.config().dinheiroGuardadoAtual
+              | currency: 'BRL'
+          }}</span>
+          para seu sonho!
+        </p>
+      </div>
+    </div>
+    <div class="bg-slate-900/80 border border-white/5 p-6 rounded-3xl flex flex-col justify-center">
+      <h3 class="text-lg font-bold mb-4">
+        Top Categorias ({{ filtroTodoPeriodo() ? 'Geral' : 'Mês' }})
+      </h3>
+      <div class="space-y-4">
+        <div *ngFor="let cat of categoriasTop()" class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div
+              class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-sm shadow-inner"
+            >
+              {{ getIconeCategoria(cat.nome) }}
+            </div>
+            <span class="text-sm text-slate-300 font-medium">{{ cat.nome }}</span>
+          </div>
+          <span class="text-sm font-bold text-white">{{ cat.valor | currency: 'BRL' }}</span>
+        </div>
+        <div *ngIf="categoriasTop().length === 0" class="text-slate-500 text-sm text-center py-4">
+          Sem dados suficientes
+        </div>
+      </div>
+    </div>
+  </div>
+  <app-novo-gasto-modal
+    [open]="novoGastoAberto()"
+    [categorias]="categoriasDisponiveis()"
+    (closed)="fecharNovoGasto()"
+    (saved)="onSubmitNovoGasto($event)"
+  ></app-novo-gasto-modal>
+</section>

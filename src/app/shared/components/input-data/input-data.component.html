@@ -1,0 +1,111 @@
+<div class="relative w-full">
+  <div class="flex items-center gap-2 w-full">
+    <div
+      class="flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-2xl px-4 py-2 text-sm text-white shadow-sm w-full"
+    >
+      <button
+        type="button"
+        (click)="prevMes()"
+        class="px-2 py-1 text-[10px] rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700"
+        [disabled]="disabled"
+      >
+        ◀
+      </button>
+      <button
+        type="button"
+        (click)="toggle($event)"
+        class="px-3 py-1 rounded-xl bg-slate-800/60 hover:bg-slate-700/60 flex items-center justify-center gap-2 flex-1 text-center"
+        [disabled]="disabled"
+      >
+        <span class="text-white font-medium whitespace-nowrap">{{ formatado() }}</span>
+        <span class="text-slate-400">📅</span>
+      </button>
+      <button
+        type="button"
+        (click)="nextMes()"
+        class="px-2 py-1 text-[10px] rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700"
+        [disabled]="disabled"
+      >
+        ▶
+      </button>
+    </div>
+    <ng-container *ngIf="acoesRapidas">
+      <button
+        type="button"
+        (click)="definirValorAtual()"
+        class="px-2 py-1 text-[10px] rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700"
+      >
+        Hoje
+      </button>
+    </ng-container>
+  </div>
+
+  <div
+    *ngIf="aberto"
+    class="fixed inset-0 z-10"
+    role="button"
+    tabindex="0"
+    (click)="aberto = false"
+    (keyup.enter)="aberto = false"
+  ></div>
+  <div
+    #painel
+    *ngIf="aberto"
+    class="absolute z-20 mt-2 w-80 bg-slate-900 border border-white/10 rounded-2xl shadow-xl p-3"
+  >
+    <div class="flex items-center justify-between mb-2">
+      <button
+        type="button"
+        (click)="prevMes()"
+        class="px-2 py-1 text-[10px] rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700"
+      >
+        ◀
+      </button>
+      <span class="text-white font-bold">{{ titulo() }}</span>
+      <button
+        type="button"
+        (click)="nextMes()"
+        class="px-2 py-1 text-[10px] rounded-full bg-slate-800 text-slate-300 hover:bg-slate-700"
+      >
+        ▶
+      </button>
+    </div>
+    <ng-container *ngIf="modo === 'data'; else seletorMeses">
+      <div class="grid grid-cols-7 gap-1 text-[10px] text-slate-400 mb-1">
+        <span>Dom</span><span>Seg</span><span>Ter</span><span>Qua</span><span>Qui</span
+        ><span>Sex</span><span>Sab</span>
+      </div>
+      <div class="grid grid-cols-7 gap-2">
+        <button
+          *ngFor="let dia of diasDoMes()"
+          type="button"
+          class="px-2 py-1 rounded-xl text-sm"
+          [class.bg-purple-600]="dia === diaSelecionado"
+          [class.text-white]="dia === diaSelecionado"
+          [class.bg-slate-800]="dia !== diaSelecionado"
+          [class.text-slate-300]="dia !== diaSelecionado"
+          [disabled]="dia === null"
+          (click)="dia !== null && selecionarDia(dia)"
+        >
+          {{ dia ?? '' }}
+        </button>
+      </div>
+    </ng-container>
+    <ng-template #seletorMeses>
+      <div class="grid grid-cols-3 gap-2">
+        <button
+          type="button"
+          *ngFor="let mesLabel of mesesAbreviados; let indice = index"
+          (click)="selecionarMes(indice + 1)"
+          class="px-3 py-2 rounded-xl text-sm"
+          [class.bg-purple-600]="indice === mes"
+          [class.text-white]="indice === mes"
+          [class.bg-slate-800]="indice !== mes"
+          [class.text-slate-300]="indice !== mes"
+        >
+          {{ mesLabel }}
+        </button>
+      </div>
+    </ng-template>
+  </div>
+</div>
