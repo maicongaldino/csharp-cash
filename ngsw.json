@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1764464158055,
+  "timestamp": 1764464903379,
   "index": "/csharp-cash/index.html",
   "assetGroups": [
     {
@@ -27,7 +27,7 @@
         "/csharp-cash/999.706e08518516a443.js",
         "/csharp-cash/common.8aa007466e9195d6.js",
         "/csharp-cash/index.html",
-        "/csharp-cash/main.b3554ffb57419704.js",
+        "/csharp-cash/main.5412c9a6f35dc70a.js",
         "/csharp-cash/manifest.webmanifest",
         "/csharp-cash/runtime.ebc1030ebc0a4f5e.js",
         "/csharp-cash/styles.ab08905bd8699c88.css"
@@ -69,8 +69,8 @@
     "/csharp-cash/common.8aa007466e9195d6.js": "7d5ab84041a1dd8945f86f546f9f462fbf7c8db6",
     "/csharp-cash/icons/csharp-cash-logo-192.svg": "5c6f38b3bc21545e3946c32de970ce9b76970c9d",
     "/csharp-cash/icons/csharp-cash-logo-512.svg": "fb9c685d46205d77f010b776d224c06bab0a9d42",
-    "/csharp-cash/index.html": "0908f2eae4cdf2f653c073bc4102dac62961096a",
-    "/csharp-cash/main.b3554ffb57419704.js": "ed9b3dd276b86110e7149092ff8f9760f2781261",
+    "/csharp-cash/index.html": "a0b7f519434933d2826e163c0b75a1c8aa547579",
+    "/csharp-cash/main.5412c9a6f35dc70a.js": "7da72ecbde28f33e97c210bf23fe5c9788b3c43c",
     "/csharp-cash/manifest.webmanifest": "fbdbe06488a2ba8dac8c2f51897c6804edfb69a1",
     "/csharp-cash/runtime.ebc1030ebc0a4f5e.js": "31bedd7916f1688760ec334610ec4469e3b588e2",
     "/csharp-cash/styles.ab08905bd8699c88.css": "4039cc4b912b973a1a97d56bc16591d321b75858"
