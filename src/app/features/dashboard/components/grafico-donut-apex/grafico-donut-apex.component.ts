@@ -24,7 +24,7 @@ import { Transacao } from '../../../../shared/models/transacao.model';
     >
       <h3 class="text-lg font-bold mb-4 text-white">{{ titulo }}</h3>
       <apx-chart
-        #chart
+        #chartCmp
         [chart]="chart"
         [series]="series"
         [labels]="labels"
@@ -53,7 +53,7 @@ export class GraficoDonutApexComponent implements OnChanges {
     { breakpoint: 640, options: { chart: { height: 220 }, legend: { position: 'bottom' } } },
   ];
 
-  @ViewChild('chart') chartRef?: ChartComponent;
+  @ViewChild('chartCmp') chartRef?: ChartComponent;
 
   constructor(
     private readonly ngZone: NgZone,

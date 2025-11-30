@@ -42,7 +42,7 @@ import { ConfigService } from '../../../../core/services/config.service';
       <h3 class="text-lg font-bold mb-1 text-white">{{ titulo }}</h3>
       <p class="text-[11px] text-slate-500 mb-3">Linha pontilhada indica renda mensal</p>
       <apx-chart
-        #chart
+        #chartCmp
         [series]="series"
         [chart]="chart"
         [xaxis]="xaxis"
@@ -89,7 +89,7 @@ export class GraficoSaldoAcumuladoApexComponent implements OnChanges {
     },
   ];
 
-  @ViewChild('chart') chartRef?: ChartComponent;
+  @ViewChild('chartCmp') chartRef?: ChartComponent;
 
   constructor(
     private readonly ngZone: NgZone,

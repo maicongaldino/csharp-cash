@@ -36,7 +36,7 @@ import { Transacao } from '../../../../shared/models/transacao.model';
     >
       <h3 class="text-lg font-bold mb-4">Top Categorias (Mês)</h3>
       <apx-chart
-        #chart
+        #chartCmp
         [series]="series"
         [chart]="chart"
         [xaxis]="xaxis"
@@ -73,7 +73,7 @@ export class TopCategoriasApexComponent implements OnChanges {
     },
   ];
 
-  @ViewChild('chart') chartRef?: ChartComponent;
+  @ViewChild('chartCmp') chartRef?: ChartComponent;
 
   constructor(
     private readonly ngZone: NgZone,

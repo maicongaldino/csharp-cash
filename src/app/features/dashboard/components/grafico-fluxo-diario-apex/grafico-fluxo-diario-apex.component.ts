@@ -43,7 +43,7 @@ import { Transacao } from '../../../../shared/models/transacao.model';
         {{ titulo }}
       </h3>
       <apx-chart
-        #chart
+        #chartCmp
         [series]="series"
         [chart]="chart"
         [xaxis]="xaxis"
@@ -65,7 +65,7 @@ export class GraficoFluxoDiarioApexComponent implements OnChanges {
   @Input() anoMes = '';
   titulo = 'Fluxo Diário';
 
-  @ViewChild('chart') chartRef?: ChartComponent;
+  @ViewChild('chartCmp') chartRef?: ChartComponent;
 
   constructor(
     private readonly ngZone: NgZone,
