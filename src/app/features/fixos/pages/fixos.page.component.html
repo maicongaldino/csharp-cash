@@ -95,13 +95,11 @@
       </form>
     </div>
     <div class="flex-1 space-y-4">
-      <h3 class="text-lg font-bold text-white flex justify-between items-center px-2">
+      <h3 class="text-lg font-bold text-white px-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
         <span>Assinaturas & Contas ({{ fixosComStatus().length }})</span>
-        <div class="flex items-center gap-3">
-          <div class="text-sm font-normal text-slate-400">
-            Total: {{ totalFixos() | currency: 'BRL' }}
-          </div>
-          <div [formGroup]="filtroForm">
+        <div class="flex items-center gap-3 w-full sm:w-auto flex-wrap">
+          <div class="text-sm font-normal text-slate-400">Total: {{ totalFixos() | currency: 'BRL' }}</div>
+          <div [formGroup]="filtroForm" class="w-full sm:w-auto">
             <app-input-data [modo]="'mes'" formControlName="mes"></app-input-data>
           </div>
         </div>

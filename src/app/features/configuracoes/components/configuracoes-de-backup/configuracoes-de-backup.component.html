@@ -2,7 +2,7 @@
   <div class="bg-slate-900 border border-white/10 p-6 rounded-3xl">
     <h3 class="text-lg font-bold text-white mb-4">Opções de Backup</h3>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
       <div>
         <div class="block text-xs text-slate-400 mb-1">Intervalo de backup</div>
         <app-seletor-suspenso
@@ -22,7 +22,7 @@
       </div>
     </div>
 
-    <div class="mt-4 flex items-center gap-3 flex-wrap">
+    <div class="mt-4 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3">
       <label class="flex items-center gap-2 text-xs text-slate-300">
         <input
           #backupAtivo
@@ -32,42 +32,46 @@
         />
         Backup automático ativo
       </label>
-      <app-botao
-        [tipo]="TipoBotaoEnum.Secundario"
-        [classeExtra]="'rounded-full'"
-        (aoClicar)="selecionarArquivoDestino()"
-      >
-        Selecionar arquivo destino
-      </app-botao>
-      <app-botao
-        [tipo]="TipoBotaoEnum.Secundario"
-        [classeExtra]="'rounded-full'"
-        (aoClicar)="selecionarArquivoParaRestauracao()"
-      >
-        Selecionar arquivo para restauração
-      </app-botao>
-      <span
-        class="text-[11px] px-3 py-1 rounded-full border border-white/10 text-slate-300 bg-slate-800/50"
-      >
-        Destino: {{ configuracoes().arquivoDestinoNome ?? 'Nenhum' }}
-      </span>
-      <span
-        class="text-[11px] px-3 py-1 rounded-full border border-white/10 text-slate-300 bg-slate-800/50"
-      >
-        Restauração: {{ configuracoes().arquivoRestauracaoNome ?? 'Nenhum' }}
-      </span>
+      <div class="flex gap-2 sm:gap-3 flex-wrap w-full sm:w-auto">
+        <app-botao
+          [tipo]="TipoBotaoEnum.Secundario"
+          [classeExtra]="'rounded-full w-full sm:w-auto'"
+          (aoClicar)="selecionarArquivoDestino()"
+        >
+          Selecionar arquivo destino
+        </app-botao>
+        <app-botao
+          [tipo]="TipoBotaoEnum.Secundario"
+          [classeExtra]="'rounded-full w-full sm:w-auto'"
+          (aoClicar)="selecionarArquivoParaRestauracao()"
+        >
+          Selecionar arquivo para restauração
+        </app-botao>
+      </div>
+      <div class="flex flex-col sm:flex-row gap-2 w-full">
+        <span
+          class="text-[11px] px-3 py-1 rounded-full border border-white/10 text-slate-300 bg-slate-800/50 truncate"
+        >
+          Destino: {{ configuracoes().arquivoDestinoNome ?? 'Nenhum' }}
+        </span>
+        <span
+          class="text-[11px] px-3 py-1 rounded-full border border-white/10 text-slate-300 bg-slate-800/50 truncate"
+        >
+          Restauração: {{ configuracoes().arquivoRestauracaoNome ?? 'Nenhum' }}
+        </span>
+      </div>
     </div>
 
     <div class="mt-4 text-xs text-slate-400">
       Último backup: {{ ultimoBackup() ? (ultimoBackup() | date: 'short') : 'Nunca' }}
     </div>
 
-    <div class="mt-6 flex flex-wrap gap-2">
+    <div class="mt-6 flex flex-col sm:flex-row flex-wrap gap-2">
       <app-botao
         [tipo]="TipoBotaoEnum.Primario"
         (aoClicar)="gerarBackupAgora()"
         [carregando]="processandoGerar"
-        [classeExtra]="'rounded-full'"
+        [classeExtra]="'rounded-full w-full sm:w-auto'"
         [desabilitado]="
           (configuracoes().backupAtivo ?? false) && !configuracoes().arquivoDestinoNome
         "
@@ -77,7 +81,7 @@
         [tipo]="TipoBotaoEnum.Secundario"
         (aoClicar)="baixarBackup()"
         [carregando]="processandoBaixar"
-        [classeExtra]="'rounded-full'"
+        [classeExtra]="'rounded-full w-full sm:w-auto'"
         [desabilitado]="
           (configuracoes().backupAtivo ?? false) && !configuracoes().arquivoDestinoNome
         "
@@ -87,7 +91,7 @@
         [tipo]="TipoBotaoEnum.Secundario"
         (aoClicar)="restaurarDoArquivoSelecionado()"
         [carregando]="processandoRestaurar"
-        [classeExtra]="'rounded-full'"
+        [classeExtra]="'rounded-full w-full sm:w-auto'"
         [desabilitado]="!configuracoes().arquivoRestauracaoNome"
         >Restaurar do Arquivo de Backup</app-botao
       >
@@ -95,8 +99,8 @@
   </div>
 </section>
 <div class="mt-2 text-[11px] text-slate-500">
-  Obs: navegadores não expõem o caminho completo do arquivo; exibimos o nome. Para confiança,
-  selecione novamente caso tenha dúvida.
+  Obs: navegadores não expõem o caminho completo do arquivo; exibimos o nome.
+  Para confiança, selecione novamente caso tenha dúvida.
 </div>
 <app-modal-erro
   [aberto]="erroAberto"

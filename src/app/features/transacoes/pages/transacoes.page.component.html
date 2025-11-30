@@ -1,6 +1,6 @@
 <section class="animate-fade-in space-y-6">
   <div class="bg-slate-900 border border-white/10 p-6 rounded-3xl shadow-xl">
-    <div class="flex items-center justify-between mb-4">
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 gap-3">
       <h2
         class="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-400"
       >
@@ -77,16 +77,16 @@
     </form>
   </div>
   <div>
-    <h3 class="text-lg font-bold text-white mb-3 px-2 flex items-center justify-between">
+    <h3 class="text-lg font-bold text-white mb-3 px-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
       <span>Histórico {{ filtroTodoPeriodo() ? 'Completo' : 'do Mês' }}</span>
-      <div [formGroup]="filtroForm">
+      <div [formGroup]="filtroForm" class="w-full sm:w-auto">
         <app-input-data [modo]="'mes'" formControlName="mes" [acoesRapidas]="true"></app-input-data>
       </div>
     </h3>
     <div class="space-y-3">
       <div
         *ngFor="let t of transacoesFiltradas()"
-        class="bg-slate-900/50 border border-white/5 p-4 rounded-3xl flex justify-between items-center hover:bg-slate-800/50 transition"
+        class="bg-slate-900/50 border border-white/5 p-4 rounded-3xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 hover:bg-slate-800/50 transition"
       >
         <div class="flex items-center gap-3">
           <div
@@ -96,7 +96,7 @@
           </div>
           <div>
             <p class="font-medium text-white">{{ t.descricao }}</p>
-            <p class="text-xs text-slate-500 flex items-center gap-1">
+            <p class="text-xs text-slate-500 flex flex-wrap items-center gap-1">
               <span>{{ t.data | date: 'dd/MM/yyyy' }}</span> •
               <span
                 class="px-2 py-0.5 rounded-full bg-slate-800 text-slate-300 text-[10px] uppercase font-bold tracking-wide"
@@ -110,21 +110,23 @@
             </p>
           </div>
         </div>
-        <div class="text-right">
+        <div class="text-right w-full sm:w-auto">
           <p class="font-bold text-red-400">- {{ t.valor | currency: 'BRL' }}</p>
-          <div class="flex items-center justify-end gap-3 mt-1">
-            <button
-              (click)="iniciarEdicaoTransacao(t)"
-              class="text-[10px] text-slate-600 hover:text-yellow-500 underline"
+          <div class="flex items-center justify-end gap-2 mt-2">
+            <app-botao
+              [tipo]="TipoBotaoEnum.Texto"
+              [tamanho]="TamanhoBotaoEnum.Pequeno"
+              (aoClicar)="iniciarEdicaoTransacao(t)"
+              [classeExtra]="'text-slate-400 hover:text-yellow-500'"
+              >Editar</app-botao
             >
-              Editar
-            </button>
-            <button
-              (click)="removerTransacao(t.id)"
-              class="text-[10px] text-slate-600 hover:text-red-500 underline"
+            <app-botao
+              [tipo]="TipoBotaoEnum.Texto"
+              [tamanho]="TamanhoBotaoEnum.Pequeno"
+              (aoClicar)="removerTransacao(t.id)"
+              [classeExtra]="'text-slate-400 hover:text-red-500'"
+              >Excluir</app-botao
             >
-              Excluir
-            </button>
           </div>
         </div>
       </div>
