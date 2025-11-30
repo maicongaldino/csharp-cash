@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkcsharp_cash=self.webpackChunkcsharp_cash||[]).push([[639],{8639:(a,s,n)=>{n.r(s),n.d(s,{CARTEIRA_ROUTES:()=>h});const h=[{path:"",loadComponent:()=>Promise.all([n.e(341),n.e(981)]).then(n.bind(n,2981)).then(t=>t.CarteiraPageComponent)}]}}]);

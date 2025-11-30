@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkcsharp_cash=self.webpackChunkcsharp_cash||[]).push([[547],{6547:(t,n,s)=>{s.r(n),s.d(n,{TRANSAcoes_ROUTES:()=>h});const h=[{path:"",loadComponent:()=>Promise.all([s.e(341),s.e(199),s.e(76),s.e(773)]).then(s.bind(s,1773)).then(o=>o.TransacoesPageComponent)}]}}]);

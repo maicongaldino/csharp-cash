@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkcsharp_cash=self.webpackChunkcsharp_cash||[]).push([[265],{7265:(t,s,n)=>{n.r(s),n.d(s,{PLANEJAMENTO_ROUTES:()=>h});const h=[{path:"",loadComponent:()=>Promise.all([n.e(341),n.e(556)]).then(n.bind(n,4556)).then(o=>o.PlanejamentoPageComponent)}]}}]);

@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkcsharp_cash=self.webpackChunkcsharp_cash||[]).push([[491],{6491:(t,n,s)=>{s.r(n),s.d(n,{FIXOS_ROUTES:()=>h});const h=[{path:"",loadComponent:()=>Promise.all([s.e(341),s.e(199),s.e(642)]).then(s.bind(s,5642)).then(o=>o.FixosPageComponent)}]}}]);
