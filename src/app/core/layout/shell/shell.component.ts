@@ -17,6 +17,7 @@ export class ShellComponent {
   private readonly backup: ServicoDeBackup = inject(ServicoDeBackup);
   mostrarBackupModal = false;
   diasPassados = 0;
+  existeBackupAnterior = false;
   tabs = [
     { id: 'dashboard', label: 'Dashboard' },
     { id: 'fixos', label: 'Fixos' },
@@ -33,6 +34,7 @@ export class ShellComponent {
   private async initBackupCheck() {
     const r = await this.backup.verificarNecessidadeDeBackup();
     this.diasPassados = r.diasDesdeUltimo;
+    this.existeBackupAnterior = r.existeBackupAnterior;
     if (r.automatico && r.diasDesdeUltimo > 0) {
       await this.backup.gerarBackupComoJson();
       this.toast.sucesso('Backup automático realizado');

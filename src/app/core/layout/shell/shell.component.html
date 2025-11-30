@@ -12,10 +12,15 @@
     (aoCancelar)="fecharModalBackup()"
   >
     <h3 class="text-lg font-bold mb-3">Backup recomendado</h3>
-    <p class="text-sm text-slate-300">
+    <p class="text-sm text-slate-300" *ngIf="existeBackupAnterior; else textoSemBackup">
       Já se passaram {{ diasPassados }} dias desde o último backup. Deseja realizar um novo backup
       agora?
     </p>
+    <ng-template #textoSemBackup>
+      <p class="text-sm text-slate-300">
+        Nunca foi realizado backup. Deseja realizar um novo backup agora?
+      </p>
+    </ng-template>
   </app-dialogo-simples>
 
   <div class="fixed bottom-4 right-4 space-y-2 z-50">

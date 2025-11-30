@@ -56,20 +56,27 @@ export class ServicoDeBackup {
     diasDesdeUltimo: number;
     deveMostrarModal: boolean;
     automatico: boolean;
+    existeBackupAnterior: boolean;
   }> {
     const ultimo = await this.dexie.obterDataDoUltimoBackup();
     const diasCfg = this.config.diasDoIntervalo();
-    if (diasCfg === 0) return { diasDesdeUltimo: 0, deveMostrarModal: false, automatico: false };
+    if (diasCfg === 0)
+      return {
+        diasDesdeUltimo: 0,
+        deveMostrarModal: false,
+        automatico: false,
+        existeBackupAnterior: !!ultimo,
+      };
     const hoje = new Date();
-    const diasPassados = ultimo
-      ? Math.floor((+hoje - +ultimo) / 86400000)
-      : Number.MAX_SAFE_INTEGER;
-    const precisa = diasPassados >= diasCfg;
+    const existe = !!ultimo;
+    const diasPassados = ultimo ? Math.floor((+hoje - +ultimo) / 86400000) : 0;
+    const precisa = (!existe && diasCfg > 0) || diasPassados >= diasCfg;
     const automatico = this.config.eAutomatico();
     return {
       diasDesdeUltimo: diasPassados,
       deveMostrarModal: precisa && !automatico,
       automatico,
+      existeBackupAnterior: existe,
     };
   }
 
