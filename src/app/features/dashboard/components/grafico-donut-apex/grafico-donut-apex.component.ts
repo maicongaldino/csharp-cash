@@ -3,6 +3,7 @@ import {
   Component,
   Input,
   OnChanges,
+  AfterViewInit,
   ViewChild,
   NgZone,
 } from '@angular/core';
@@ -37,7 +38,7 @@ import { Transacao } from '../../../../shared/models/transacao.model';
     </div>
   `,
 })
-export class GraficoDonutApexComponent implements OnChanges {
+export class GraficoDonutApexComponent implements OnChanges, AfterViewInit {
   @Input() transacoes: Transacao[] = [];
   @Input() topN = 8;
   @Input() titulo = 'Gastos por Categoria';
@@ -60,13 +61,39 @@ export class GraficoDonutApexComponent implements OnChanges {
     private readonly analytics: ServicoDeAnalytics,
   ) {}
 
+  private labelsPendentes: string[] = [];
+  private seriesPendentes: number[] = [];
+
   ngOnChanges(): void {
     const dados = this.analytics.gastosPorCategoria(this.transacoes, this.topN);
     const nextSeries = dados.map((d) => d.valor);
     const nextLabels = dados.map((d) => d.label);
+    this.seriesPendentes = nextSeries;
+    this.labelsPendentes = nextLabels;
+    if (this.chartRef) {
+      this.ngZone.runOutsideAngular(() => {
+        this.chartRef?.updateSeries(nextSeries, true);
+        this.chartRef?.updateOptions(
+          { labels: nextLabels, chart: { redrawOnParentResize: true } },
+          true,
+          true,
+        );
+      });
+    }
+  }
+
+  ngAfterViewInit(): void {
+    const nextSeries = this.seriesPendentes;
+    const nextLabels = this.labelsPendentes;
     this.ngZone.runOutsideAngular(() => {
-      this.chartRef?.updateSeries(nextSeries, true);
-      this.chartRef?.updateOptions({ labels: nextLabels }, true, true);
+      setTimeout(() => {
+        this.chartRef?.updateSeries(nextSeries, true);
+        this.chartRef?.updateOptions(
+          { labels: nextLabels, chart: { redrawOnParentResize: true } },
+          true,
+          true,
+        );
+      });
     });
   }
 }

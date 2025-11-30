@@ -3,6 +3,7 @@ import {
   Component,
   Input,
   OnChanges,
+  AfterViewInit,
   ViewChild,
   NgZone,
 } from '@angular/core';
@@ -59,7 +60,7 @@ import { Transacao } from '../../../../shared/models/transacao.model';
     </div>
   `,
 })
-export class GraficoFluxoDiarioApexComponent implements OnChanges {
+export class GraficoFluxoDiarioApexComponent implements OnChanges, AfterViewInit {
   @Input() transacoes: Transacao[] = [];
   @Input() filtroTodoPeriodo = false;
   @Input() anoMes = '';
@@ -99,6 +100,9 @@ export class GraficoFluxoDiarioApexComponent implements OnChanges {
     },
   ];
 
+  private categoriasPendentes: string[] = [];
+  private valoresPendentes: number[] = [];
+
   ngOnChanges(): void {
     const dados = this.analytics.montarGraficoBarras(
       this.transacoes,
@@ -107,6 +111,8 @@ export class GraficoFluxoDiarioApexComponent implements OnChanges {
     );
     const categorias = dados.map((d) => d.label);
     const valores = dados.map((d) => d.valor);
+    this.categoriasPendentes = categorias;
+    this.valoresPendentes = valores;
     if (this.filtroTodoPeriodo) {
       this.titulo = 'Evolução Mensal (Total Gasto)';
     } else {
@@ -115,13 +121,36 @@ export class GraficoFluxoDiarioApexComponent implements OnChanges {
       const formatado = data.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
       this.titulo = `Fluxo Diário (${formatado})`;
     }
+    if (this.chartRef) {
+      this.ngZone.runOutsideAngular(() => {
+        this.chartRef?.updateSeries([{ name: 'Despesas', data: valores }], true);
+        this.chartRef?.updateOptions(
+          {
+            xaxis: { ...this.xaxis, categories: categorias },
+            chart: { redrawOnParentResize: true },
+          },
+          true,
+          true,
+        );
+      });
+    }
+  }
+
+  ngAfterViewInit(): void {
+    const categorias = this.categoriasPendentes;
+    const valores = this.valoresPendentes;
     this.ngZone.runOutsideAngular(() => {
-      this.chartRef?.updateSeries([{ name: 'Despesas', data: valores }], true);
-      this.chartRef?.updateOptions(
-        { xaxis: { ...this.xaxis, categories: categorias } },
-        true,
-        true,
-      );
+      setTimeout(() => {
+        this.chartRef?.updateSeries([{ name: 'Despesas', data: valores }], true);
+        this.chartRef?.updateOptions(
+          {
+            xaxis: { ...this.xaxis, categories: categorias },
+            chart: { redrawOnParentResize: true },
+          },
+          true,
+          true,
+        );
+      });
     });
   }
 }

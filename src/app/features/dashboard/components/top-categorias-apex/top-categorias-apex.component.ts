@@ -3,6 +3,7 @@ import {
   Component,
   Input,
   OnChanges,
+  AfterViewInit,
   ViewChild,
   NgZone,
 } from '@angular/core';
@@ -50,7 +51,7 @@ import { Transacao } from '../../../../shared/models/transacao.model';
     </div>
   `,
 })
-export class TopCategoriasApexComponent implements OnChanges {
+export class TopCategoriasApexComponent implements OnChanges, AfterViewInit {
   @Input() transacoes: Transacao[] = [];
   @Input() topN = 5;
 
@@ -80,19 +81,47 @@ export class TopCategoriasApexComponent implements OnChanges {
     private readonly analytics: ServicoDeAnalytics,
   ) {}
 
+  private categoriasPendentes: string[] = [];
+  private valoresPendentes: number[] = [];
+
   ngOnChanges(): void {
     const itens = this.analytics
       .gastosPorCategoria(this.transacoes, this.topN)
       .map((x) => ({ nome: x.label, valor: x.valor }));
     const categorias = itens.map((x) => x.nome);
     const valores = itens.map((x) => x.valor);
+    this.categoriasPendentes = categorias;
+    this.valoresPendentes = valores;
+    if (this.chartRef) {
+      this.ngZone.runOutsideAngular(() => {
+        this.chartRef?.updateSeries([{ name: 'Total', data: valores }], true);
+        this.chartRef?.updateOptions(
+          {
+            xaxis: { ...this.xaxis, categories: categorias },
+            chart: { redrawOnParentResize: true },
+          },
+          true,
+          true,
+        );
+      });
+    }
+  }
+
+  ngAfterViewInit(): void {
+    const categorias = this.categoriasPendentes;
+    const valores = this.valoresPendentes;
     this.ngZone.runOutsideAngular(() => {
-      this.chartRef?.updateSeries([{ name: 'Total', data: valores }], true);
-      this.chartRef?.updateOptions(
-        { xaxis: { ...this.xaxis, categories: categorias } },
-        true,
-        true,
-      );
+      setTimeout(() => {
+        this.chartRef?.updateSeries([{ name: 'Total', data: valores }], true);
+        this.chartRef?.updateOptions(
+          {
+            xaxis: { ...this.xaxis, categories: categorias },
+            chart: { redrawOnParentResize: true },
+          },
+          true,
+          true,
+        );
+      });
     });
   }
 }

@@ -3,6 +3,7 @@ import {
   Component,
   Input,
   OnChanges,
+  AfterViewInit,
   ViewChild,
   NgZone,
 } from '@angular/core';
@@ -58,7 +59,7 @@ import { ConfigService } from '../../../../core/services/config.service';
     </div>
   `,
 })
-export class GraficoSaldoAcumuladoApexComponent implements OnChanges {
+export class GraficoSaldoAcumuladoApexComponent implements OnChanges, AfterViewInit {
   @Input() transacoes: Transacao[] = [];
   @Input() valorReferencia?: number;
   @Input() titulo = 'Saldo Acumulado no Mês';
@@ -97,6 +98,9 @@ export class GraficoSaldoAcumuladoApexComponent implements OnChanges {
     private readonly config: ConfigService,
   ) {}
 
+  private categoriasPendentes: string[] = [];
+  private cumulPendentes: number[] = [];
+
   ngOnChanges(): void {
     const dados = this.analytics.saldoAcumuladoMensal(this.transacoes);
     const categorias = dados.map((d) => d.label);
@@ -106,6 +110,9 @@ export class GraficoSaldoAcumuladoApexComponent implements OnChanges {
       s += d.valor;
       cumul.push(s);
     }
+    this.categoriasPendentes = categorias;
+    this.cumulPendentes = cumul;
+    if (!this.chartRef) return;
     this.ngZone.runOutsideAngular(() => {
       this.chartRef?.updateSeries([{ name: 'Saldo', data: cumul }], true);
       const nextAnn =
@@ -133,10 +140,57 @@ export class GraficoSaldoAcumuladoApexComponent implements OnChanges {
               }
             : {};
       this.chartRef?.updateOptions(
-        { xaxis: { ...this.xaxis, categories: categorias }, annotations: nextAnn },
+        {
+          xaxis: { ...this.xaxis, categories: categorias },
+          annotations: nextAnn,
+          chart: { redrawOnParentResize: true },
+        },
         true,
         true,
       );
+    });
+  }
+
+  ngAfterViewInit(): void {
+    const categorias = this.categoriasPendentes;
+    const cumul = this.cumulPendentes;
+    this.ngZone.runOutsideAngular(() => {
+      setTimeout(() => {
+        this.chartRef?.updateSeries([{ name: 'Saldo', data: cumul }], true);
+        const nextAnn =
+          typeof this.valorReferencia === 'number'
+            ? {
+                yaxis: [
+                  {
+                    y: this.valorReferencia,
+                    borderColor: '#64748b',
+                    strokeDashArray: 4,
+                    label: { text: 'Renda' },
+                  },
+                ],
+              }
+            : this.config.config().rendaMensal
+              ? {
+                  yaxis: [
+                    {
+                      y: this.config.config().rendaMensal,
+                      borderColor: '#64748b',
+                      strokeDashArray: 4,
+                      label: { text: 'Renda' },
+                    },
+                  ],
+                }
+              : {};
+        this.chartRef?.updateOptions(
+          {
+            xaxis: { ...this.xaxis, categories: categorias },
+            annotations: nextAnn,
+            chart: { redrawOnParentResize: true },
+          },
+          true,
+          true,
+        );
+      });
     });
   }
 }
