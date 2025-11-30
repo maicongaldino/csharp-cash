@@ -30,7 +30,9 @@
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
     "@angular/service-worker": "^18.2.0",
+    "apexcharts": "^3.54.1",
     "dexie": "^4.2.1",
+    "ng-apexcharts": "^1.11.0",
     "rxjs": "^7.8.1",
     "zone.js": "^0.14.4"
   },

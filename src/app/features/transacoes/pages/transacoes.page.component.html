@@ -77,7 +77,9 @@
     </form>
   </div>
   <div>
-    <h3 class="text-lg font-bold text-white mb-3 px-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+    <h3
+      class="text-lg font-bold text-white mb-3 px-2 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+    >
       <span>Histórico {{ filtroTodoPeriodo() ? 'Completo' : 'do Mês' }}</span>
       <div [formGroup]="filtroForm" class="w-full sm:w-auto">
         <app-input-data [modo]="'mes'" formControlName="mes" [acoesRapidas]="true"></app-input-data>

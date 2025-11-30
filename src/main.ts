@@ -1,6 +1,7 @@
 import { bootstrapApplication } from '@angular/platform-browser';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { LOCALE_ID, isDevMode } from '@angular/core';
+import { provideZoneChangeDetection } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localePt from '@angular/common/locales/pt';
 import { provideRouter } from '@angular/router';
@@ -15,6 +16,7 @@ bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(APP_ROUTES),
     provideAnimations(),
+    provideZoneChangeDetection({ eventCoalescing: true, runCoalescing: true }),
     { provide: LOCALE_ID, useValue: 'pt' },
     provideServiceWorker('ngsw-worker.js', {
       enabled: !isDevMode(),

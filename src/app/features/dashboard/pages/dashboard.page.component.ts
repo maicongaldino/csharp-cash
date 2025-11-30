@@ -1,4 +1,4 @@
-import { Component, computed, signal, inject } from '@angular/core';
+import { Component, computed, signal, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -14,8 +14,12 @@ import { TransacoesService } from '../../../core/services/transacoes.service';
 import { CarteiraService } from '../../../core/services/carteira.service';
 import { getIconeCategoria } from '../../../shared/utils/formatacao.util';
 import { obterAnoMesLocal } from '../../../shared/utils/data.util';
-import { ItemGrafico } from '../models/item-grafico.model';
 import { TipoBotaoEnum, TamanhoBotaoEnum } from '../../../design-system/models/enums.model';
+import { GraficoFluxoDiarioApexComponent } from '../components/grafico-fluxo-diario-apex/grafico-fluxo-diario-apex.component';
+import { GraficoSaldoAcumuladoApexComponent } from '../components/grafico-saldo-acumulado-apex/grafico-saldo-acumulado-apex.component';
+import { GraficoDonutApexComponent } from '../components/grafico-donut-apex/grafico-donut-apex.component';
+import { ObjetivoEconomiaCardComponent } from '../components/objetivo-economia-card/objetivo-economia-card.component';
+import { TopCategoriasApexComponent } from '../components/top-categorias-apex/top-categorias-apex.component';
 
 @Component({
   selector: 'app-dashboard-page',
@@ -27,8 +31,14 @@ import { TipoBotaoEnum, TamanhoBotaoEnum } from '../../../design-system/models/e
     NovoGastoModalComponent,
     InputDataComponent,
     BotaoComponent,
+    GraficoFluxoDiarioApexComponent,
+    GraficoSaldoAcumuladoApexComponent,
+    GraficoDonutApexComponent,
+    ObjetivoEconomiaCardComponent,
+    TopCategoriasApexComponent,
   ],
   templateUrl: './dashboard.page.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardPageComponent {
   readonly config = inject(ConfigService);
@@ -72,6 +82,12 @@ export class DashboardPageComponent {
     return data.toLocaleDateString('pt-BR', { month: 'long', year: 'numeric' });
   });
 
+  readonly tituloFluxoDiario = computed(() =>
+    this.filtroTodoPeriodo()
+      ? 'Evolução Mensal (Total Gasto)'
+      : `Fluxo Diário (${this.mesFormatado()})`,
+  );
+
   readonly totalFixos = computed(() => this.fixos.totalNoMes(this.filtroMes()));
   readonly porcentagemRendaComprometida = computed(() => {
     const renda = this.config.config().rendaMensal || 1;
@@ -105,41 +121,6 @@ export class DashboardPageComponent {
     return Math.min(100, (configuracaoAtual.dinheiroGuardadoAtual / alvo) * 100);
   });
 
-  readonly dadosGrafico = computed<ItemGrafico[]>(() => {
-    const transacoes = this.transacoesFiltradas();
-    if (transacoes.length === 0) return [];
-    if (this.filtroTodoPeriodo()) {
-      const porMes = new Map<string, number>();
-      for (const transacao of transacoes) {
-        const chaveAnoMes = transacao.data.slice(0, 7);
-        porMes.set(chaveAnoMes, (porMes.get(chaveAnoMes) ?? 0) + transacao.valor);
-      }
-      const valorMaximo = Math.max(...Array.from(porMes.values()));
-      return Array.from(porMes.entries()).map(([chave, valor]) => ({
-        label: new Date(Number(chave.slice(0, 4)), Number(chave.slice(5)) - 1).toLocaleDateString(
-          'pt-BR',
-          {
-            month: 'short',
-          },
-        ),
-        valor: valor,
-        altura: (valor / valorMaximo) * 100,
-      }));
-    }
-    const anoMes = this.filtroMes();
-    const porDia = new Map<string, number>();
-    for (const transacao of transacoes) {
-      const chaveDia = transacao.data.slice(8, 10);
-      porDia.set(chaveDia, (porDia.get(chaveDia) ?? 0) + transacao.valor);
-    }
-    const valorMaximo = Math.max(...Array.from(porDia.values()));
-    return Array.from(porDia.entries()).map(([chave, valor]) => ({
-      label: `${chave}/${anoMes.slice(5)}`,
-      valor: valor,
-      altura: (valor / valorMaximo) * 100,
-    }));
-  });
-
   readonly categoriasDisponiveis = computed(() => {
     const set = new Set<string>();
     for (const t of this.transacoes.transacoes()) set.add(t.categoria);
@@ -153,17 +134,6 @@ export class DashboardPageComponent {
       e.preventDefault();
       if (!this.novoGastoAberto()) this.abrirNovoGasto();
     }
-  }
-
-  categoriasTop() {
-    const mapa = new Map<string, number>();
-    for (const t of this.transacoesFiltradas()) {
-      mapa.set(t.categoria, (mapa.get(t.categoria) ?? 0) + t.valor);
-    }
-    return Array.from(mapa.entries())
-      .map(([nome, valor]) => ({ nome, valor }))
-      .sort((a, b) => b.valor - a.valor)
-      .slice(0, 5);
   }
 
   getIconeCategoria = getIconeCategoria;
