@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkcsharp_cash=self.webpackChunkcsharp_cash||[]).push([[103],{4103:(t,h,s)=>{s.r(h),s.d(h,{DASHBOARD_ROUTES:()=>n});const n=[{path:"",loadComponent:()=>Promise.all([s.e(341),s.e(199),s.e(76),s.e(272)]).then(s.bind(s,8272)).then(o=>o.DashboardPageComponent)}]}}]);
