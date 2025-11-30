@@ -48,6 +48,12 @@ export class ServicoDeConfiguracoesDeBackup {
     await this.dexie.salvarConfiguracoes(novo);
   }
 
+  async atualizarArquivoRestauracaoNome(nome: string) {
+    const novo = { ...this._config(), arquivoRestauracaoNome: nome };
+    this._config.set(novo);
+    await this.dexie.salvarConfiguracoes(novo);
+  }
+
   diasDoIntervalo(): number {
     const i = this._config().intervalo;
     if (i === 'Nunca') return 0;

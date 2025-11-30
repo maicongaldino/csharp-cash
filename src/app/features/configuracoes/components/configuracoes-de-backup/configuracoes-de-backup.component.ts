@@ -63,17 +63,28 @@ export class ConfiguracoesDeBackupComponent {
     await this.backup.selecionarArquivoDestino();
   }
 
-  async restaurarDoArquivoDestino() {
+  async selecionarArquivoParaRestauracao() {
+    await this.backup.selecionarArquivoParaRestauracao();
+  }
+
+  async restaurarDoArquivoSelecionado() {
     this.processandoRestaurar = true;
     try {
-      const f = await this.backup.obterArquivoDestinoComoFile();
+      const f = await this.backup.obterArquivoRestauracaoComoFile();
       if (!f) {
         this.erroTitulo = 'Arquivo de backup não selecionado';
-        this.erroMensagem = 'Selecione o arquivo destino do backup para poder restaurar.';
+        this.erroMensagem = 'Selecione o arquivo para restauração para poder restaurar.';
         this.erroAberto = true;
         return;
       }
-      await this.restauracao.restaurarDeArquivo(f);
+      try {
+        await this.restauracao.restaurarDeArquivo(f);
+      } catch (e) {
+        this.erroTitulo = 'Falha ao restaurar';
+        this.erroMensagem = (e as Error)?.message ?? 'Arquivo de backup inválido';
+        this.erroAberto = true;
+        return;
+      }
       this.toast.sucesso('Restauração concluída');
     } finally {
       this.processandoRestaurar = false;

@@ -12,16 +12,17 @@ export class ServicoDeBackup {
   ) {}
 
   private arquivoHandle: ManipuladorArquivoGravavel | null = null;
+  private arquivoRestauracaoHandle: ManipuladorArquivoGravavel | null = null;
 
   async selecionarArquivoDestino(): Promise<void> {
     const picker = (
       window as unknown as {
-        showSaveFilePicker?: (options: unknown) => Promise<ManipuladorArquivoGravavel>;
+        showOpenFilePicker?: (options: unknown) => Promise<ManipuladorArquivoGravavel[]>;
       }
-    ).showSaveFilePicker;
+    ).showOpenFilePicker;
     if (!picker) return;
-    const handle = await picker({
-      suggestedName: 'backup-csharp-cash.json',
+    const handles = await picker({
+      multiple: false,
       types: [
         {
           description: 'JSON',
@@ -29,9 +30,34 @@ export class ServicoDeBackup {
         },
       ],
     });
+    const handle = handles?.[0];
+    if (!handle) return;
     this.arquivoHandle = handle;
     const nome = (handle as unknown as { name?: string }).name ?? 'backup-csharp-cash.json';
     await this.config.atualizarArquivoDestinoNome(nome);
+  }
+
+  async selecionarArquivoParaRestauracao(): Promise<void> {
+    const picker = (
+      window as unknown as {
+        showOpenFilePicker?: (options: unknown) => Promise<ManipuladorArquivoGravavel[]>;
+      }
+    ).showOpenFilePicker;
+    if (!picker) return;
+    const handles = await picker({
+      multiple: false,
+      types: [
+        {
+          description: 'JSON',
+          accept: { 'application/json': ['.json'] },
+        },
+      ],
+    });
+    const handle = handles?.[0];
+    if (!handle) return;
+    this.arquivoRestauracaoHandle = handle;
+    const nome = (handle as unknown as { name?: string }).name ?? 'backup-csharp-cash.json';
+    await this.config.atualizarArquivoRestauracaoNome(nome);
   }
 
   async obterArquivoDestinoComoFile(): Promise<File | null> {
@@ -40,6 +66,18 @@ export class ServicoDeBackup {
     if (!getFile) return null;
     try {
       return await getFile.call(this.arquivoHandle);
+    } catch {
+      return null;
+    }
+  }
+
+  async obterArquivoRestauracaoComoFile(): Promise<File | null> {
+    if (!this.arquivoRestauracaoHandle) return null;
+    const getFile = (this.arquivoRestauracaoHandle as unknown as { getFile?: () => Promise<File> })
+      .getFile;
+    if (!getFile) return null;
+    try {
+      return await getFile.call(this.arquivoRestauracaoHandle);
     } catch {
       return null;
     }
@@ -83,9 +121,6 @@ export class ServicoDeBackup {
   async gerarBackupComoJson(): Promise<ResultadoDeBackup> {
     const conteudo = await this.dexie.exportarDadosComoJson();
     const cfg = this.config.configuracoes();
-    if (cfg.backupAtivo && !this.arquivoHandle) {
-      return { sucesso: false, mensagem: 'Selecione o arquivo destino para o backup.' };
-    }
     if (cfg.backupAtivo && this.arquivoHandle) {
       await this.escreverNoArquivoDestino(conteudo);
       const tamanho = new Blob([conteudo], { type: 'application/json' }).size;
@@ -100,16 +135,6 @@ export class ServicoDeBackup {
 
   async baixarBackup(nome = 'backup.json'): Promise<ResultadoDeBackup> {
     const conteudo = await this.dexie.exportarDadosComoJson();
-    const cfg = this.config.configuracoes();
-    if (cfg.backupAtivo && !this.arquivoHandle) {
-      return { sucesso: false, mensagem: 'Selecione o arquivo destino para o backup.' };
-    }
-    if (cfg.backupAtivo && this.arquivoHandle) {
-      await this.escreverNoArquivoDestino(conteudo);
-      const tamanho = new Blob([conteudo], { type: 'application/json' }).size;
-      await this.dexie.atualizarDataDoBackup(new Date());
-      return { sucesso: true, tamanhoBytes: tamanho, dataIso: new Date().toISOString() };
-    }
     const blob = new Blob([conteudo], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');

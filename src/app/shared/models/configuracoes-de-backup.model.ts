@@ -8,4 +8,5 @@ export interface ConfiguracoesDeBackup {
   modo: ModoDeBackup;
   backupAtivo?: boolean;
   arquivoDestinoNome?: string;
+  arquivoRestauracaoNome?: string;
 }

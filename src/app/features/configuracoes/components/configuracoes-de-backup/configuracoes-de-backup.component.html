@@ -39,10 +39,22 @@
       >
         Selecionar arquivo destino
       </app-botao>
+      <app-botao
+        [tipo]="TipoBotaoEnum.Secundario"
+        [classeExtra]="'rounded-full'"
+        (aoClicar)="selecionarArquivoParaRestauracao()"
+      >
+        Selecionar arquivo para restauração
+      </app-botao>
       <span
         class="text-[11px] px-3 py-1 rounded-full border border-white/10 text-slate-300 bg-slate-800/50"
       >
         Destino: {{ configuracoes().arquivoDestinoNome ?? 'Nenhum' }}
+      </span>
+      <span
+        class="text-[11px] px-3 py-1 rounded-full border border-white/10 text-slate-300 bg-slate-800/50"
+      >
+        Restauração: {{ configuracoes().arquivoRestauracaoNome ?? 'Nenhum' }}
       </span>
     </div>
 
@@ -73,15 +85,19 @@
       >
       <app-botao
         [tipo]="TipoBotaoEnum.Secundario"
-        (aoClicar)="restaurarDoArquivoDestino()"
+        (aoClicar)="restaurarDoArquivoSelecionado()"
         [carregando]="processandoRestaurar"
         [classeExtra]="'rounded-full'"
-        [desabilitado]="!configuracoes().arquivoDestinoNome"
+        [desabilitado]="!configuracoes().arquivoRestauracaoNome"
         >Restaurar do Arquivo de Backup</app-botao
       >
     </div>
   </div>
 </section>
+<div class="mt-2 text-[11px] text-slate-500">
+  Obs: navegadores não expõem o caminho completo do arquivo; exibimos o nome. Para confiança,
+  selecione novamente caso tenha dúvida.
+</div>
 <app-modal-erro
   [aberto]="erroAberto"
   [titulo]="erroTitulo"
